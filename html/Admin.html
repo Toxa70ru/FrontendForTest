@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="../css/Admin.css">
+        <link rel="stylesheet" href="../css/header.css">
+        <link rel="stylesheet" href="../css/footer.css">
+        <link rel="stylesheet" href="../css/three.css">
+        <link rel="stylesheet" href="../css/background.css">
+        <title>Rosneft Q&A</title>
+    </head>
+    <body>
+        <header>
+            <div class="logo">
+                <img src="Рисунок1.png" width="120" height="60px" />
+            </div>
+            <div class="col-2" id="btn2">
+                <div class="container-2">
+                    <div class="btn btn-two" onclick="changePage()">
+                        <span>Создать вопрос</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-1" id="btn1">
+                <div class="container-1">
+                    <div class="btn btn-one" onclick="exit()">
+                        <span id="UserFullName"></span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div>
+            <div class="area" >
+                <ul class="circles-black">
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                </ul>
+                <ul class="circles-yellow">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div >
+            <div class="three">
+                <h1>Заявки</h1> 
+            </div>
+        </div>
+        <div class="filter-button-open" id ="myButton_open">
+            <a class="qestion-btn" onclick="myFunctionFilter()">
+                <i class="fa fa-bars" aria-hidden="true"></i>
+            </a> 
+        </div>
+        <div class="edit-button-open" id ="myButton_open">
+            <a class="qestion-btn" onclick="myFunctionEdit()">
+                <i class="fa fa-pencil" aria-hidden="true"></i>
+            </a> 
+        </div>
+        <div class="refresh-button-open" id ="myButton_open">
+            <a class="qestion-btn" onclick="refresh()">
+                <i class="fa fa-refresh" aria-hidden="true"></i>
+            </a> 
+        </div>
+        <div class="formFilter" id="myFormFilter">
+            <form class="decor">
+                <div class="form-inner">
+                    <h3>Фильтры</h3>
+                    <div class="container-buttons">
+                        <div class="filterButton" onclick="toggleFilter('all')" data-id="all">
+                            <i class="fa fa-filter" aria-hidden="true">Все</i>
+                        </div>
+                        <div class="filterButton" onclick="toggleFilter('1')" data-id="1">
+                            <i class="fa fa-filter" aria-hidden="true">Установка ПО</i>
+                        </div>  
+                    </div>
+                    <div class="container-buttons">
+                        <div class="filterButton" onclick="toggleFilter('2')" data-id="2">
+                            <i class="fa fa-filter" aria-hidden="true">Ошибка ПО</i>
+                        </div> 
+                        <div class="filterButton" onclick="toggleFilter('3')" data-id="3">
+                            <i class="fa fa-filter" aria-hidden="true">Учетная запись</i> 
+                        </div> 
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="formEdit" id="myFormEdit">
+            <form class="decor">
+                <div class="form-inner">
+                    <h3>Изменить заявку</h3>
+                    <input type="text" required placeholder="Напишите номер заявки" id="IdApplication">
+                    <label for="SF-name">
+                        <h4>Изменить ПО на:</h4>
+                    </label>
+                    <select id="softName"></select>
+                    <br><br>
+                    <div class="container-buttons">
+                        <div class="filterButton" onclick="getSoloApplication()">
+                            <i class="fa fa-paper-plane" aria-hidden="true">Отправить</i> 
+                        </div> 
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="data" style="text-align:center" id="dataId">
+            
+            <div class="listView">
+                <div id="tableContainer" style="text-align:center"></div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>&copy; 2024, РОСНЕФТЬ<br>Электронная почта: TsymbalAV@tomsknipi.ru</p> 
+        </footer>
+    </body>
+    <script>
+        function exit(){
+            window.location.replace("../html/index.html");
+        }
+        
+        function changePage(){
+            window.location.href("../html/CreateQuestion.html");
+        }
+
+        function myFunctionFilter() {
+            var display = getComputedStyle(document.getElementById('myFormFilter')).display;
+            if (display == "none") {
+                document.getElementById('myFormFilter').style.display = "block";
+            } else {
+                document.getElementById('myFormFilter').style.display = "none";
+            }
+        }
+        function myFunctionEdit() {
+            var display = getComputedStyle(document.getElementById('myFormEdit')).display;
+            if (display == "none") {
+                document.getElementById('myFormEdit').style.display = "block";
+            } else {
+                document.getElementById('myFormEdit').style.display = "none";
+            }
+        }
+        
+        /функции для фильтра/
+
+        var activeFilter = null;
+        function toggleFilter(id){
+            var button = document.querySelector('.filterButton[data-id="'+id+'"]');
+            if(activeFilter == id){
+                showAllBlocks();
+                activeFilter = null;
+                button.style.background = '';
+            }else{
+                if(activeFilter != null){
+                    var prevButton = document.querySelector('.filterButton[data-id="'+activeFilter+'"]');
+                    prevButton.style.background = '';
+                }
+                if(id != 'all'){
+                    Buttonfilter(id);
+                }else{
+                    showAllBlocks();
+                }
+                
+                activeFilter = id;
+                button.style.background = 'green';
+            }
+        }
+
+        function showAllBlocks(){ 
+            var blocks = document.querySelectorAll('#tableContainer .block');
+            blocks.forEach(function(block){
+                block.style.display='block';
+            });
+        }
+
+        function Buttonfilter(id){
+            var blocks = document.querySelectorAll('#tableContainer .block');
+            blocks.forEach(function(block){
+                if(block.id != id){
+                    block.style.display = 'none';
+                }
+                else{
+                    block.style.display='block';
+                }
+            });
+        }
+
+        /функции для фильтра/
+
+        let userInfo = sessionStorage.getItem('username');
+        const UserMass = userInfo.split("/");
+        let Nam = UserMass[2];
+        let midN = UserMass[3];
+        let UpperName = Nam.charAt(0).toUpperCase();
+        let UppermidN = midN.charAt(0).toUpperCase(); 
+        document.getElementById('UserFullName').innerHTML = UserMass[1]+" "+UpperName+"."+UppermidN+".";
+
+        //кэш
+        async function setCache(cache=[]){
+            return async function(){
+                if(cache.length <= 0){
+                    const dataAppeals = await fetch("http://10.116.24.6:90/api/Appeals");               //0
+                    const dataStatus = await fetch("http://10.116.24.6:90/api/Statuses");               //1
+                    const dataSoftwareNames = await fetch("http://10.116.24.6:90/api/SoftwareNames");   //2
+                    const dataApplications = await fetch("http://10.116.24.6:90/api/Applications");     //3
+
+                    cache.push(await dataAppeals.json());
+                    cache.push(await dataStatus.json());
+                    cache.push(await dataSoftwareNames.json())
+                    cache.push(await dataApplications.json())
+                    console.log("Cache is not init");
+                }
+                return cache;
+            }
+        }
+        const cache = {
+            data: null,
+            row:null
+        }
+        async function getCache(flush = false){
+            if(Object.values(cache)[1] === null){
+                cache.data = await setCache([]);
+                cache.row = await cache.data();
+            }
+            else if(Object.values(cache)[1] !== null){
+                if(flush === true){
+                    cache.row = [];
+                    cache.data = await setCache([]);
+                    cache.row = await cache.data();
+                }
+                else{
+                    console.log("Cached data")
+                }
+            }
+            return cache
+        }
+        //кэш
+        let SoftnameIdForExecutor;
+        window.addEventListener('DOMContentLoaded',(event)=>{
+            fetch('http://10.116.24.6:90/api/Executors').then(response=>response.json()).then(data=>{
+                //console.log(data);
+                for(let i =0;i<data.length;i++){
+                    if(data[i].userId == UserMass[0]){
+                        SoftnameIdForExecutor=data[i].softNameId;
+                        GetApplicationsByid(SoftnameIdForExecutor);
+                    }
+                }
+            })
+        });
+        function refresh(){
+            location.reload(true);
+        }
+
+        window.addEventListener('DOMContentLoaded',async function(){
+            const data = await getCache(false);
+            var mass = Object.values(data)[1];
+            var massSoftnames = mass[2];
+
+            let listNameAP = document.getElementById('softName');
+            for(let i =0;i<massSoftnames.length;i++){
+                let optionAppeal=document.createElement('option');
+                optionAppeal.setAttribute('id',massSoftnames[i].id);
+                let optionAppealText = document.createTextNode(massSoftnames[i].softName);
+                optionAppeal.appendChild(optionAppealText);
+                listNameAP.appendChild(optionAppeal);
+            }
+        });
+
+        //let Appeal = fetch('https://localhost:7237/api/Appeals').then(response=>response.json()).then(data=>{Appeal = data;});
+        //let Status = fetch('https://localhost:7237/api/Statuses').then(response=>response.json()).then(data=>{Status = data;});
+        //let Sofware = fetch('https://localhost:7237/api/SoftwareNames').then(response=>response.json()).then(data=>{Sofware = data;}); 
+        
+        function getSoloApplication(){
+            var IdApplication = document.getElementById('IdApplication').value;
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET','http://10.116.24.6:90/api/Applications/'+IdApplication,true);
+            xhr.onreadystatechange = function ()
+            {
+                if(xhr.readyState === 4 && xhr.status === 200)
+                {
+                    let response = JSON.parse(xhr.responseText);
+
+                    let id = response.id;
+                    let user = response.userFullName;
+                    let appeal = response.appealId;
+                    let text = response.description;
+                    let PCnumber = response.pcNumber;
+                    let status = response.statusId;
+                    putSoloApplication(id,user,appeal,text,PCnumber,status);
+                }
+            };
+            xhr.send();
+        }
+        function putSoloApplication(id,user,appeal,text,PCnumber,status,SFName){
+            var SoftnameId = document.getElementById('softName').options[document.getElementById('softName').selectedIndex].id;
+
+            fetch('http://10.116.24.6:90/api/Applications/'+id, {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            id: id,
+                            softwareNameId: SoftnameId,
+                            appealId: appeal,
+                            description: text,
+                            pcNumber: PCnumber,
+                            statusId: status,
+                            userFullName:user
+                        }),
+                        headers: {
+                            'content-type': 'application/json',
+                        },
+                        })
+                        .then((data) => console.log(data))
+                        .catch((err) => console.error(err));
+        }
+
+        async function GetApplicationsByid(SF_id){
+            // var xhr = new XMLHttpRequest();
+            // xhr.open('GET','https://localhost:7237/api/Applications',true);
+            // xhr.onreadystatechange = function ()
+            // {
+            //     if(xhr.readyState === 4 && xhr.status === 200)
+            //     {
+            //         let response = JSON.parse(xhr.responseText);
+            //         createHeaderForApplicationsTable();
+            //         for(let i = 0; i<response.length;i++){
+            //             if(response[i].softwareNameId == SF_id){
+                            
+            //                 let id = response[i].id;
+            //                 let user = response[i].userFullName;
+            //                 let appeal = response[i].appealId;
+            //                 let text = response[i].description;
+            //                 let PCnumber = response[i].pcNumber;
+            //                 let status = response[i].statusId;
+            //                 let SFName = response[i].softwareNameId;
+                            
+            //                 createApplicationsGrid(text,PCnumber,user,appeal,status,SFName,id);
+            //             }
+            //         }
+            //     }
+            // };
+            // xhr.send();
+            const data = await getCache(false);
+            var mass = Object.values(data)[1];
+            var massApplications = mass[3];
+
+            createHeaderForApplicationsTable();
+            for(let i = 0; i<massApplications.length;i++){
+                if(massApplications[i].softwareNameId == SF_id){
+                    
+                    let id = massApplications[i].id;
+                    let user = massApplications[i].userFullName;
+                    let appeal = massApplications[i].appealId;
+                    let text = massApplications[i].description;
+                    let PCnumber = massApplications[i].pcNumber;
+                    let status = massApplications[i].statusId;
+                    let SFName = massApplications[i].softwareNameId;
+                    
+                    createApplicationsGrid(text,PCnumber,user,appeal,status,SFName,id);
+                }
+            }
+        }
+ 
+        function createHeaderForApplicationsTable(){
+            var tableContainer = document.getElementById('tableContainer');
+            let thead = document.createElement('thead');
+            let trHeader =  document.createElement('tr');
+
+            let tdIdHeader = document.createElement('th');
+            let tdUserHeader = document.createElement('th');
+            let tdAppealHeader = document.createElement('th');
+            let tdStatusHeader = document.createElement('th');
+            let tdSofwareHeader = document.createElement('th');
+            let tdPCnumberHeader = document.createElement('th');
+            let tdtextHeader = document.createElement('th');
+            
+            let tdIdHeaderText = document.createTextNode("Номер заявки");
+            let tdUserFullHeaderText = document.createTextNode("Создатель");
+            let tdAppealHeaderText = document.createTextNode("Причина обращения");
+            let tdStatusHeaderText = document.createTextNode("Статус");
+            let tdSofwareHeaderText = document.createTextNode("ПО");
+            let tdPCnumberHeaderText = document.createTextNode("Номер компьютера");
+            let tdtextHeaderText = document.createTextNode("Описание");
+
+            tdIdHeader.appendChild(tdIdHeaderText);
+            tdUserHeader.appendChild(tdUserFullHeaderText);
+            tdAppealHeader.appendChild(tdAppealHeaderText);
+            tdStatusHeader.appendChild(tdStatusHeaderText);
+            tdSofwareHeader.appendChild(tdSofwareHeaderText);
+            tdPCnumberHeader.appendChild(tdPCnumberHeaderText);
+            tdtextHeader.appendChild(tdtextHeaderText);
+
+            trHeader.appendChild(tdIdHeader);
+            trHeader.appendChild(tdSofwareHeader);
+            trHeader.appendChild(tdUserHeader);
+            trHeader.appendChild(tdAppealHeader);
+            trHeader.appendChild(tdtextHeader);
+            trHeader.appendChild(tdPCnumberHeader);
+            trHeader.appendChild(tdStatusHeader);
+            thead.appendChild(trHeader);
+            tableContainer.appendChild(thead);
+
+        }
+
+        let clicked = true;
+        async function createApplicationsGrid(text,PCnumber,user,appeal,status,SFName,id){
+            const data = await getCache(false);
+            var mass = Object.values(data)[1];
+            var massAppeals = mass[0];
+            var massStatus = mass[1];
+            var massSoftware = mass[2];
+
+
+            let AppealName;
+            //console.log(Appeal.length);
+            for(let i = 0;i<massAppeals.length;i++){
+                if(massAppeals[i].id == appeal){
+                    AppealName = massAppeals[i].cause;
+                }
+            }
+
+            let StatusName;
+            for(let i = 0;i<massStatus.length;i++){
+                if(massStatus[i].id == status){
+                    StatusName = massStatus[i].condition;
+                }
+            }
+
+            let SofwareName;
+            for(let i = 0;i<massSoftware.length;i++){
+                if(massSoftware[i].id == SFName){
+                    SofwareName = massSoftware[i].softName;
+                }
+            }
+
+            var tableContainer = document.getElementById('tableContainer');
+            let tr = document.createElement('tr');
+            tr.setAttribute('class',"block");
+            tr.setAttribute('id',appeal);
+
+            let tdId = document.createElement('td');
+            let tdUserFullName = document.createElement('td');
+            let tdAppealName = document.createElement('td');
+            tdAppealName.setAttribute('id',appeal);
+            let tdStatusName = document.createElement('td');
+            let tdSofwareName = document.createElement('td');
+            let tdPCnumber = document.createElement('td');
+            let tdtext = document.createElement('td');
+            
+            let tdIdText = document.createTextNode(id);
+            let tdUserFullNameText = document.createTextNode(user);
+            let tdAppealNameText = document.createTextNode(AppealName);
+            let tdStatusNameText = document.createTextNode(StatusName);
+            let tdSofwareNameText = document.createTextNode(SofwareName);
+            let tdPCnumberText = document.createTextNode(PCnumber);
+            let tdtextText = document.createTextNode(text);
+            
+            tdId.appendChild(tdIdText);
+            tdUserFullName.appendChild(tdUserFullNameText);
+            tdAppealName.appendChild(tdAppealNameText);
+            tdStatusName.appendChild(tdStatusNameText);
+            tdSofwareName.appendChild(tdSofwareNameText);
+            tdPCnumber.appendChild(tdPCnumberText);
+            tdtext.appendChild(tdtextText);
+
+            if(StatusName=="Не обработан"){
+                let buttonEnter = document.createElement('button');
+                buttonEnter.setAttribute('id',id+'enter');
+                let buttonEnterText = document.createTextNode('принять')
+                buttonEnter.appendChild(buttonEnterText);
+                tdStatusName.appendChild(buttonEnter);
+
+                tr.appendChild(tdId);
+                tr.appendChild(tdSofwareName);
+                tr.appendChild(tdUserFullName);
+                tr.appendChild(tdAppealName);
+                tr.appendChild(tdtext);
+                tr.appendChild(tdPCnumber);
+                tr.appendChild(tdStatusName);
+
+                tableContainer.appendChild(tr);
+
+                const element = document.getElementById(id+'enter');
+                element.onclick = (event) =>{
+                    document.getElementById(id+'enter').disabled = false; 
+                    fetch('http://10.116.24.6:90/api/Applications/'+id, {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            id: id,
+                            softwareNameId: SFName,
+                            appealId: appeal,
+                            description: text,
+                            pcNumber: PCnumber,
+                            statusId: 2,
+                            userFullName:user
+                        }),
+                        headers: {
+                            'content-type': 'application/json',
+                        },
+                        })
+                        .then((data) => console.log(data))
+                        .catch((err) => console.error(err));
+                    document.getElementById(id+'enter').disabled = true;        
+                }
+            }
+            else if(StatusName=="В работе"){
+                let buttonClose = document.createElement('button');
+                buttonClose.setAttribute('id',id+'close');
+                let buttonCloseText = document.createTextNode('закрыть')
+
+                let buttonLeave = document.createElement('button');
+                buttonLeave.setAttribute('id',id+'leave');
+                let buttonLeaveText = document.createTextNode('отклонить')
+
+                buttonClose.appendChild(buttonCloseText);
+                buttonLeave.appendChild(buttonLeaveText);
+                let container = document.createElement('span');
+                container.appendChild(buttonClose);
+                container.appendChild(buttonLeave);
+                tdStatusName.appendChild(container);
+
+                tr.appendChild(tdId);
+                tr.appendChild(tdSofwareName);
+                tr.appendChild(tdUserFullName);
+                tr.appendChild(tdAppealName);
+                tr.appendChild(tdtext);
+                tr.appendChild(tdPCnumber);
+                tr.appendChild(tdStatusName);
+
+                tableContainer.appendChild(tr);
+
+                const elementClose = document.getElementById(id+'close');
+                elementClose.onclick = (event) =>{
+                    document.getElementById(id+'close').disabled = false;
+                    document.getElementById(id+'leave').disabled = false; 
+                    fetch('http://10.116.24.6:90/api/Applications/'+id, {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            id: id,
+                            softwareNameId: SFName,
+                            appealId: appeal,
+                            description: text,
+                            pcNumber: PCnumber,
+                            statusId: 1,
+                            userFullName:user
+                        }),
+                        headers: {
+                            'content-type': 'application/json',
+                        },
+                        })
+                        .then((data) => console.log(data))
+                        .catch((err) => console.error(err));
+                    document.getElementById(id+'close').disabled = true;
+                    document.getElementById(id+'leave').disabled = true;     
+                }
+
+                const elementLeave = document.getElementById(id+'leave');
+                elementLeave.onclick = (event) =>{
+                    document.getElementById(id+'leave').disabled = false;
+                    document.getElementById(id+'close').disabled = false; 
+                    fetch('http://10.116.24.6:90/api/Applications/'+id, {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            id: id,
+                            softwareNameId: SFName,
+                            appealId: appeal,
+                            description: text,
+                            pcNumber: PCnumber,
+                            statusId: 4,
+                            userFullName:user
+                        }),
+                        headers: {
+                            'content-type': 'application/json',
+                        },
+                        })
+                        .then((data) => console.log(data))
+                        .catch((err) => console.error(err));
+                    document.getElementById(id+'leave').disabled = true;
+                    document.getElementById(id+'close').disabled = true;     
+                }
+
+                
+            }
+            else if(StatusName=="Выполнено"){
+                tr.appendChild(tdId);
+                tr.appendChild(tdSofwareName);
+                tr.appendChild(tdUserFullName);
+                tr.appendChild(tdAppealName);
+                tr.appendChild(tdtext);
+                tr.appendChild(tdPCnumber);
+                tdStatusName.setAttribute('class','green');
+                tr.appendChild(tdStatusName);
+                tableContainer.appendChild(tr);
+                
+            }
+            else{
+                tr.appendChild(tdId);
+                tr.appendChild(tdSofwareName);
+                tr.appendChild(tdUserFullName);
+                tr.appendChild(tdAppealName);
+                tr.appendChild(tdtext);
+                tr.appendChild(tdPCnumber);
+                tdStatusName.setAttribute('class','red');
+                tr.appendChild(tdStatusName);
+                tableContainer.appendChild(tr);
+            }
+        }
+
+        // const searchInput = document.getElementById('searchTxt');
+        // searchInput.addEventListener('keypress',function(e){
+        //     if(e.key == 'Enter'){
+        //         RemoveContainer();
+        //     }
+        // });
+    </script>
+</html>

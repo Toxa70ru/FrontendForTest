@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="Index.css">
+        <title>Rosneft Q&A</title>
+    </head>
+    <body>
+        <div id="container" class="container">
+            <!-- FORM SECTION -->
+            <div class="row">
+                <!-- SIGN UP -->
+                <div class="col align-items-center flex-col sign-up">
+                    <div class="form-wrapper align-items-center">
+                        <div class="form sign-up">
+                            <div class="input-group">
+                                <i class='bx bxs-user'></i>
+                                <input type="text" placeholder="Фамилия" id="lastName">
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bxs-user'></i>
+                                <input type="text" placeholder="Имя" id="firstName">
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bxs-user'></i>
+                                <input type="text" placeholder="Отчество" id="middleName">
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bx-mail-send'></i>
+                                <input type="email" placeholder="Email" id="email">
+                            </div>
+
+                            <div class="input-group">
+                                <i class='bx bxs-user'></i>
+                                <input type="text" placeholder="Логин" id="username">
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bxs-lock-alt'></i>
+                                <input type="password" placeholder="Пароль" id="password">
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bxs-lock-alt'></i>
+                                <input type="password" placeholder="Повторите пароль" id="passwordRepeat">
+                            </div>
+                            <button onclick="Registration()">
+                                Зарегистрироваться
+                            </button>
+                            <p>
+                                <span>
+                                    Уже есть аккаунт?
+                                </span>
+                                <b onclick="toggle()" class="pointer">
+                                    Войти здесь
+                                </b>
+                            </p>
+                        </div>
+                    </div>
+                
+                </div>
+                <!-- END SIGN UP -->
+                <!-- SIGN IN -->
+                <div class="col align-items-center flex-col sign-in">
+                    <div class="form-wrapper align-items-center">
+                        <div class="form sign-in">
+                            <div class="input-group">
+                                <i class='bx bxs-user'></i>
+                                <input type="text" placeholder="Логин" id="SignInUsername">
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bxs-lock-alt'></i>
+                                <input type="password" placeholder="Пароль" id="SignInPassword">
+                            </div>
+                            <button onclick="SignIn()">
+                                Войти
+                            </button>
+                            <!-- <p>
+                                <b>
+                                    Forgot password?
+                                </b>
+                            </p> -->
+                            <p>
+                                <span>
+                                    Нет аккаунта?
+                                </span>
+                                <b onclick="toggle()" class="pointer">
+                                    Зарегистрироваться здесь
+                                </b>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-wrapper">
+            
+                    </div>
+                </div>
+                <!-- END SIGN IN -->
+            </div>
+            <!-- END FORM SECTION -->
+            <!-- CONTENT SECTION -->
+            <div class="row content-row">
+                <!-- SIGN IN CONTENT -->
+                <div class="col align-items-center flex-col">
+                    <div class="text sign-in">
+                        <h2>
+                            Добро пожаловать
+                        </h2>
+        
+                    </div>
+                    <div class="img sign-in">
+            
+                    </div>
+                </div>
+                <!-- END SIGN IN CONTENT -->
+                <!-- SIGN UP CONTENT -->
+                <div class="col align-items-center flex-col">
+                    <div class="img sign-up">
+                    
+                    </div>
+                    <div class="text sign-up">
+                        <h2>
+                            Присоединяйтесь <br>к нам
+                        </h2>
+        
+                    </div>
+                </div>
+                <!-- END SIGN UP CONTENT -->
+            </div>
+            <!-- END CONTENT SECTION -->
+        </div>
+    </body>
+    <script>
+        let container = document.getElementById('container')
+
+        toggle = () => {
+            container.classList.toggle('sign-in')
+            container.classList.toggle('sign-up')
+        }
+
+        setTimeout(() => {
+            container.classList.add('sign-in')
+        }, 200)
+
+
+        function ForGetExecutor(number,info){
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET','https://10.116.24.6:90/api/Executors',true);
+            xhr.onreadystatechange = function ()
+            {
+                if(xhr.readyState === 4 && xhr.status === 200)
+                {
+                    let response = JSON.parse(xhr.responseText);
+                    //console.log(response);
+                    for(let i = 0; i<response.length;i++){
+                        if(response[i].userId == number){
+                            sessionStorage.setItem('username',info);
+                            setTimeout(function() {
+                                window.location.replace("../html/Admin.html");
+                            }, 1500);
+                        }
+                        else{
+                            sessionStorage.setItem('username',info);
+                            setTimeout(function() {
+                                window.location.replace("../html/User.html");
+                            }, 1500);
+                        }
+                    }
+                }
+            };
+            xhr.send();
+        }
+        function SignIn(){
+            var Username = document.getElementById('SignInUsername').value;
+            var Password = document.getElementById('SignInPassword').value;
+
+            var data = {
+                username: Username,
+                password: Password
+            }
+            
+            var json = JSON.stringify(data);
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST","https://10.116.24.6:90/api/Auth/authenticate",true);
+            xhr.setRequestHeader("Content-Type","application/json");
+            xhr.send(json);
+
+            xhr.onload = function(){
+                if(xhr.readyState === 4 && xhr.status == 200){
+                    //console.log(xhr.responseText);
+                    let response = JSON.parse(xhr.responseText);
+                    let info = response.id+"/"+response.surname+"/"+response.name+"/"+response.patronymic;
+                    ForGetExecutor(response.id,info);
+                    
+                }else{
+                    alert("Неправильный логин или пароль");
+                    console.error('Ошибка'+xhr.status + ':'+ xhr.statusText);
+                }
+            };
+            xhr.onerror = function(){
+                console.error('Ошибка сети');
+            };
+        }
+        
+        function Registration(){
+            var Name = document.getElementById('firstName').value;
+            var Surname = document.getElementById('lastName').value;
+            var Patronymic = document.getElementById('middleName').value;
+            var Email = document.getElementById('email').value;
+            var Username = document.getElementById('username').value;
+            var Password = document.getElementById('password').value;
+            var PasswordRepeat = document.getElementById('passwordRepeat').value;
+
+            if(Password!=PasswordRepeat){
+                alert("Пароли не совпадают!");
+            }else{
+                var data = {
+                    name: Name,
+                    surname: Surname,
+                    patronumics: Patronymic,
+                    email: Email,
+                    username: Username,
+                    password: Password
+                }
+                
+                var json = JSON.stringify(data);
+                
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST","https://10.116.24.6:90/api/Auth/register",true);
+                xhr.setRequestHeader("Content-Type","application/json");
+                xhr.send(json);
+
+                xhr.onload = function(){
+                    if(xhr.readyState === 4 && xhr.status == 200){
+                        console.log(xhr.responseText);
+                        window.location.replace("../html/User.html");
+                    }else{
+                        console.error('Ошибка'+xhr.status + ':'+ xhr.statusText);
+                    }
+                };
+                xhr.onerror = function(){
+                    console.error('Ошибка сети');
+                };
+            }
+        }
+    </script>
+</html>

@@ -1,0 +1,62 @@
+.three{
+    width: 80%;
+    position: absolute;
+    top:20vh;
+    left:13vh;
+  
+    color: #000000;
+    font-size: 0.8em;
+    font-weight: normal;
+    padding: 10px 40px;
+    display: inline-block;
+    margin: 0;
+    line-height: 1;
+  }
+  .three h1{
+    text-align: center;
+    color: #000000;
+    font-size: 40px;
+  }
+
+  @media screen and (min-width:768px ) {
+    .three{
+      top: 10%;
+      left: 8%;
+    }
+  }
+  
+  @media screen and (min-width:1024px ) {
+    .three{
+      top: 10%;
+      left: 8%;
+    }
+  }
+  
+  @media screen and (min-width:1440px ) {
+    .three{
+      top: 10%;
+      left: 8%;
+    }
+  }
+  
+  @media screen and (min-width:1920px ) {
+    .three{
+      top: 10%;
+      left: 8%;
+    }
+  }
+  
+  @media screen and (min-width:2560px ) {
+    .three{
+      top: 10%;
+      left: 8%;
+    }
+  }
+  
+  @media screen and (min-width:3840px ) {
+    .three{
+      top: 10%;
+      left: 8%;
+    }
+    
+  }

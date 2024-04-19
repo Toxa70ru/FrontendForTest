@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="../css/CreateQuestion.css">
+        <link rel="stylesheet" href="../css/header.css">
+        <link rel="stylesheet" href="../css/footer.css">
+        <link rel="stylesheet" href="../css/three.css">
+        <link rel="stylesheet" href="../css/background.css">
+        <title>Rosneft Q&A</title>
+    </head>
+    <body>
+        <header>
+            <div class="logo">
+                <img src="Рисунок1.png" width="120" height="60px" />
+            </div>
+            <div class="col-2" id="btn2">
+                <div class="container-2">
+                    <div class="btn btn-one" onclick="changePage()">
+                        <span>Заявки</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-1" id="btn1">
+                <div class="container-1">
+                    <div class="btn btn-one" onclick="exit()">
+                        <span id="UserFullName"></span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div>
+            <div class="area" >
+                <ul class="circles-black">
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                </ul>
+                <ul class="circles-yellow">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div >
+            <div class="three">
+                <h1> Создать вопрос</h1> 
+            </div>
+
+            <div class="form-wrap" id="AddNewQuestion">
+                <form class="AddNewQuestiondecor">
+                    <div class="form-left-decoration"></div>
+                    <div class="form-right-decoration"></div>
+                    <div class="circle"></div>
+                    <div class="form-inner">
+                    <h3>Создать вопрос</h3>
+                    <br>
+                    <label for="SF-name">
+                        <h4>Выбрать название ПО</h4>
+                    </label>
+                    <select id="name"></select>
+                    <br><br>
+                    <input type="text" id="Question" placeholder="Введите содержание вопроса">
+                    <input type="text" id="Answer" placeholder="Введите содержание ответа">
+
+                    <label for="SF-name">
+                        <h4>Выбрать первое изображение</h4>
+                    </label>
+                    <select id="firstImage">
+                        <option id="1">Не указывать</option>
+                    </select>
+
+                    <label for="secondImage">
+                        <h4>Выбрать второе изображение</h4>
+                    </label>
+                    <select id="secondImage">
+                        <option id="1">Не указывать</option>
+                    </select>
+
+                    <label for="SF-name">
+                        <h4>Выбрать третье изображение</h4>
+                    </label>
+                    <select id="thirdImage">
+                        <option id="1">Не указывать</option>
+                    </select>
+                    <button onclick="UpdateData()" id="updateFormButton">Обновить данные</button>
+                    </div>
+                </form>
+                <button onclick="PostNewQuestion()" id="PostNewQuestion">Отправить</button>
+            </div>
+            
+            <div class="AddNewImages" id="AddNewImages">
+                <form class="decor" id="imageForm" enctype="multipart/form-data">
+                    <div class="form-left-decoration"></div>
+                    <div class="form-right-decoration"></div>
+                    <div class="circle"></div>
+                    <div class="form-inner">
+                    <h3>Загрузить изображение</h3>
+                    <br>
+                    <input type="file" id="imageInput" name="file" accept="image/*" >
+                    <button  id="submitFormButton">Отправить</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="deleteOldQuestion" id="deleteOldQuestion">
+                <form class="decor" id="imageForm" enctype="multipart/form-data">
+                    <div class="form-left-decoration"></div>
+                    <div class="form-right-decoration"></div>
+                    <div class="circle"></div>
+                    <div class="form-inner">
+                    <h3>Удалить старый вопрос</h3>
+                    <br>
+                    <label for="SF-name">
+                        <h4>Выбрать вопрос</h4>
+                    </label>
+                    <select id="conteinerForQuestion"></select>
+                    </div>
+                </form>
+                <button  id="deleteFormButton" onclick="deleteOldQuestion()">Удалить</button>
+            </div>
+        </div>
+        
+
+        <footer class="footer">
+            <p>&copy; 2024, РОСНЕФТЬ<br>Электронная почта: TsymbalAV@tomsknipi.ru</p> 
+        </footer>
+    </body>
+    <script>
+        function exit(){
+            window.location.replace("../html/index.html");
+        }
+        function changePage(){
+            window.location.href("../html/Admin.html");
+        }
+        let userInfo = sessionStorage.getItem('username');
+        const UserMass = userInfo.split("/");
+        let Nam = UserMass[2];
+        let midN = UserMass[3];
+        let UpperName = Nam.charAt(0).toUpperCase();
+        let UppermidN = midN.charAt(0).toUpperCase(); 
+        document.getElementById('UserFullName').innerHTML = UserMass[1]+" "+UpperName+"."+UppermidN+".";
+
+        
+        function PostNewQuestion(){
+            var question = document.getElementById('Question').value;
+            var answer = document.getElementById('Answer').value;
+
+            var softName = document.getElementById('name').options[document.getElementById('name').selectedIndex].id;
+
+            var firstImage = document.getElementById('firstImage').options[document.getElementById('firstImage').selectedIndex].id;
+
+            var secondImage = document.getElementById('secondImage').options[document.getElementById('secondImage').selectedIndex].id;
+
+            var thirdImage = document.getElementById('thirdImage').options[document.getElementById('thirdImage').selectedIndex].id;
+
+            if(firstImage == 1 && secondImage == 1 && thirdImage == 1){
+                
+                var data = {
+                    softwareNameId: softName,
+                    question: question,
+                    answer:answer,
+                    massImagesId:null
+                }
+
+                var json = JSON.stringify(data);
+                //console.log(data)
+                PostNewQuestionWithoutImage(json);
+            }
+            else{
+                var imageData = {
+                    firstPictureId: firstImage,
+                    secondPictureId: secondImage,
+                    thirdPictureId: thirdImage
+                }
+                var json = JSON.stringify(imageData);
+                postMassImage(json)
+            }
+        }
+
+        function postMassImage(json){
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST","http://10.116.24.6:90/api/MassImage",true);
+            xhr.setRequestHeader("Content-Type","application/json");
+            xhr.send(json);
+            xhr.onload = function(){
+                if(xhr.readyState === 4 && xhr.status == 200){
+                    var response = JSON.parse(xhr.responseText);
+                    //console.log(response.id);
+                    return response.id;
+                }else{
+                    var response = JSON.parse(xhr.responseText);
+                    //console.log(response.id);
+                    PostNewQuestionWithImage(response.id);
+                    console.error('Ошибка'+xhr.status + ':'+ xhr.statusText);
+                }
+            };
+            xhr.onerror = function(){
+                console.error('Ошибка сети');
+            };
+        }
+
+        function PostNewQuestionWithoutImage(json){
+            console.log(json);
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST","http://10.116.24.6:90/api/QuestuionAnswers",true);
+            xhr.setRequestHeader("Content-Type","application/json");
+            xhr.send(json);
+
+            xhr.onload = function(){
+                if(xhr.readyState === 4 && xhr.status == 200){
+                    console.log(xhr.responseText);
+                    alert("Ваш вопрос успешно создан!");
+                }else{
+                    console.error('Ошибка'+xhr.status + ':'+ xhr.statusText);
+                }
+            };
+            xhr.onerror = function(){
+                console.error('Ошибка сети');
+            };
+        }
+
+        function PostNewQuestionWithImage(MassImageId){
+            var question = document.getElementById('Question').value;
+            var answer = document.getElementById('Answer').value;
+
+            var softName = document.getElementById('name').options[document.getElementById('name').selectedIndex].id;
+
+            var data = {
+                softwareNameId: softName,
+                question: question,
+                answer:answer,
+                massImagesId:MassImageId
+            }
+            var json = JSON.stringify(data);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST","http://10.116.24.6:90/api/QuestuionAnswers",true);
+            xhr.setRequestHeader("Content-Type","application/json");
+            xhr.send(json);
+
+            xhr.onload = function(){
+                if(xhr.readyState === 4 && xhr.status == 200){
+                    console.log(xhr.responseText);
+                    // alert("Ваш вопрос успешно создан!");
+                }else{
+                    console.log(xhr.responseText);
+                    console.error('Ошибка'+xhr.status + ':'+ xhr.statusText);
+                }
+            };
+            xhr.onerror = function(){
+                console.error('Ошибка сети');
+            };
+        }
+
+        function UpdateData(){
+            var firstImage = document.getElementById('firstImage');
+            var secondImage = document.getElementById('secondImage');
+            var thirdImage = document.getElementById('thirdImage');
+            firstImage.innerHTML ="";
+            secondImage.innerHTML ="";
+            thirdImage.innerHTML ="";
+        }
+
+
+        function deleteOldQuestion(){
+            var question = document.getElementById('conteinerForQuestion').options[document.getElementById('conteinerForQuestion').selectedIndex].id;
+            fetch('http://10.116.24.6:90/api/QuestuionAnswers/' + question, {
+                method: 'DELETE', 
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8' 
+                }
+            })
+            .then(res => res.text()) // or res.json()
+            .then(res => alert("Вопрос успешно удален!"))
+        }
+
+        document.getElementById("imageForm").addEventListener("submit",function(event){
+            event.preventDefault();
+            var image = document.getElementById('imageInput');
+            
+            var file = image.files[0];
+            var formData = new FormData();
+            formData.append('file',file);
+            //console.log(formData.getAll('file'));
+
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST","http://10.116.24.6:90/api/Image",true);
+            //xhr.setRequestHeader("Content-Type","multipart/form-data");
+            
+            xhr.onload = function(){
+                if(xhr.readyState === 4 && xhr.status == 200){
+                    console.log(xhr.responseText);
+                }else{
+                    console.error('Ошибка '+xhr.status + ':'+ xhr.statusText);
+                }
+            };
+            xhr.onerror = function(){
+                console.error('Ошибка сети');
+            };
+            xhr.send(formData);
+        });
+
+        window.addEventListener('DOMContentLoaded',async function(){
+            fetch('http://10.116.24.6:90/api/QuestuionAnswers').then(response=>response.json()).then(data=>{
+                question = data;
+                let listNameSF = document.getElementById('conteinerForQuestion');
+                for(let i =0;i<question.length;i++){
+                    let optionNameSF=document.createElement('option');
+                    optionNameSF.setAttribute('id',question[i].id);
+                    let optionNameSFText = document.createTextNode(question[i].question);
+                    optionNameSF.appendChild(optionNameSFText);
+                    listNameSF.appendChild(optionNameSF);
+                }
+            });
+            // const data = await getCache(false);
+            // var mass = Object.values(data)[1];
+            // var massQuestions = mass[0];
+            
+            // let listNameSF = document.getElementById('conteinerForQuestion');
+            // for(let i =0;i<massQuestions.length;i++){
+            //     let optionNameSF=document.createElement('option');
+            //     optionNameSF.setAttribute('id',massQuestions[i].id);
+            //     let optionNameSFText = document.createTextNode(massQuestions[i].question);
+            //     optionNameSF.appendChild(optionNameSFText);
+            //     listNameSF.appendChild(optionNameSF);
+            // }
+
+        });
+
+        window.addEventListener('DOMContentLoaded',async function(){
+            fetch('http://10.116.24.6:90/api/SoftwareNames').then(response=>response.json()).then(data=>{
+                Sofware = data;
+                let listNameSF = document.getElementById('name');
+                for(let i =0;i<Sofware.length;i++){
+                    let optionNameSF=document.createElement('option');
+                    optionNameSF.setAttribute('id',Sofware[i].id);
+                    let optionNameSFText = document.createTextNode(Sofware[i].softName);
+                    optionNameSF.appendChild(optionNameSFText);
+                    listNameSF.appendChild(optionNameSF);
+                }
+            });
+
+            // const data = await getCache(false);
+            // var mass = Object.values(data)[1];
+            // var massSoftnames = mass[1];
+
+            // let listNameSF = document.getElementById('name');
+            // for(let i =0;i<massSoftnames.length;i++){
+            //     let optionNameSF=document.createElement('option');
+            //     optionNameSF.setAttribute('id',massSoftnames[i].id);
+            //     let optionNameSFText = document.createTextNode(massSoftnames[i].softName);
+            //     optionNameSF.appendChild(optionNameSFText);
+            //     listNameSF.appendChild(optionNameSF);
+            // }
+        });
+
+        window.addEventListener('DOMContentLoaded',async function(){
+            fetch('http://10.116.24.6:90/api/Image').then(response=>response.json()).then(data=>{
+                firstImage = data;
+                let listNameSF = document.getElementById('firstImage');
+                for(let i =0;i<firstImage.length;i++){
+                    let optionNameSF=document.createElement('option');
+                    optionNameSF.setAttribute('id',firstImage[i].id);
+                    let optionNameSFText = document.createTextNode(firstImage[i].filename);
+                    optionNameSF.appendChild(optionNameSFText);
+                    listNameSF.appendChild(optionNameSF);
+                }
+            }); 
+            // const data = await getCache(false);
+            // var mass = Object.values(data)[1];
+            // var massImages = mass[2];
+
+            // let listNameSF = document.getElementById('firstImage');
+            // for(let i =0;i<massImages.length;i++){
+            //     let optionNameSF=document.createElement('option');
+            //     optionNameSF.setAttribute('id',massImages[i].id);
+            //     let optionNameSFText = document.createTextNode(massImages[i].filename);
+            //     optionNameSF.appendChild(optionNameSFText);
+            //     listNameSF.appendChild(optionNameSF);
+            // }
+
+        });
+
+        window.addEventListener('DOMContentLoaded',async function(){
+            fetch('http://10.116.24.6:90/api/Image').then(response=>response.json()).then(data=>{
+                secondImage = data;
+                let listNameSF = document.getElementById('secondImage');
+                for(let i =0;i<secondImage.length;i++){
+                    let optionNameSF=document.createElement('option');
+                    optionNameSF.setAttribute('id',secondImage[i].id);
+                    let optionNameSFText = document.createTextNode(secondImage[i].filename);
+                    optionNameSF.appendChild(optionNameSFText);
+                    listNameSF.appendChild(optionNameSF);
+                }
+            });
+
+            // const data = await getCache(false);
+            // var mass = Object.values(data)[1];
+            // var massImages = mass[2];
+
+            // let listNameSF = document.getElementById('secondImage');
+            // for(let i =0;i<massImages.length;i++){
+            //     let optionNameSF=document.createElement('option');
+            //     optionNameSF.setAttribute('id',massImages[i].id);
+            //     let optionNameSFText = document.createTextNode(massImages[i].filename);
+            //     optionNameSF.appendChild(optionNameSFText);
+            //     listNameSF.appendChild(optionNameSF);
+            // }
+        });
+        window.addEventListener('DOMContentLoaded',async function(){
+            fetch('http://10.116.24.6:90/api/Image').then(response=>response.json()).then(data=>{
+                thirdImage = data;
+                let listNameSF = document.getElementById('thirdImage');
+                for(let i =0;i<thirdImage.length;i++){
+                    let optionNameSF=document.createElement('option');
+                    optionNameSF.setAttribute('id',thirdImage[i].id);
+                    let optionNameSFText = document.createTextNode(thirdImage[i].filename);
+                    optionNameSF.appendChild(optionNameSFText);
+                    listNameSF.appendChild(optionNameSF);
+                }
+            });
+            // const data = await getCache(false);
+            // var mass = Object.values(data)[1];
+            // var massImages = mass[2];
+
+            // let listNameSF = document.getElementById('thirdImage');
+            // for(let i =0;i<massImages.length;i++){
+            //     let optionNameSF=document.createElement('option');
+            //     optionNameSF.setAttribute('id',massImages[i].id);
+            //     let optionNameSFText = document.createTextNode(massImages[i].filename);
+            //     optionNameSF.appendChild(optionNameSFText);
+            //     listNameSF.appendChild(optionNameSF);
+            // }
+        });
+
+    </script>
+</html>
