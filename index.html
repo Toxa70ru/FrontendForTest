@@ -181,6 +181,7 @@
             var json = JSON.stringify(data);
             
             var xhr = new XMLHttpRequest();
+            xhr.withCredentials = true;
             xhr.open("POST","https://10.116.24.6:90/api/Auth/authenticate",true);
             xhr.setRequestHeader("Content-Type","application/json");
             xhr.send(json);
